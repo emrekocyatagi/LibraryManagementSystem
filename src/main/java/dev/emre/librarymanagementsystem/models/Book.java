@@ -13,11 +13,13 @@ public class Book {
     private BookCondition bookCondition = BookCondition.NEW;
 
     public Book(
+            long id,
             String title,
             String author,
             Genre genre,
             int totalCopies
     ) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.genre = genre;
@@ -26,17 +28,49 @@ public class Book {
         this.availableCopies = totalCopies;
 
     }
+
+
+
     public BookCondition getBookCondition() {
         return bookCondition;
     }
     public void setBookCondition(BookCondition bookCondition) {
         this.bookCondition = bookCondition;
     }
+
+    /**
+     * Decreases the number of copies of the book and available copies.
+     * @param numberOfCopies    how many copies to decrease
+     */
     public void decreaseCopies(int numberOfCopies) {
+        if(numberOfCopies <= 0) throw new IllegalArgumentException("NUmber of Copies cannot be negative.");
+        if(availableCopies < numberOfCopies) throw new IllegalArgumentException("Not enough copies.");
         availableCopies -= numberOfCopies;
     }
+
+    /**
+     * Increases the number of copies of the book and available copies.
+     * @param numberOfCopies    how many copies to increase
+     */
+    public void increaseCopies(int numberOfCopies) {
+        if(numberOfCopies <= 0) throw new IllegalArgumentException("NUmber of Copies cannot be negative.");
+        if(availableCopies + numberOfCopies > totalCopies) throw new IllegalArgumentException("Not enough room in the library.");
+        availableCopies += numberOfCopies;
+    }
+
+
     public void markedAsDamaged() {
         bookCondition = BookCondition.DAMAGED;
+    }
+
+    /**
+     * Adds copies to the total number of copies and available copies.
+     * @param numberOfCopies    how many copies to add
+     */
+    public void addCopies(int numberOfCopies) {
+        if(numberOfCopies <= 0) throw new IllegalArgumentException("NUmber of Copies cannot be negative.");
+        totalCopies += numberOfCopies;
+        availableCopies += numberOfCopies;
     }
     public String getTitle() {
         return title;
@@ -60,9 +94,6 @@ public class Book {
     public int getTotalCopies() {
         return totalCopies;
     }
-    public void setTotalCopies(int totalCopies) {
-        this.totalCopies = totalCopies;
-    }
     public int getAvailableCopies() {
         return availableCopies;
     }
@@ -72,12 +103,9 @@ public class Book {
     public long getId() {
         return id;
     }
-    public void setId(long id) {
-        this.id = id;
-    }
 
     @Override
     public String toString() {
-        return String.format("Titel: %s, Author: %s Genre: %s", title, author, genre);
+        return String.format("\nTitel: %s, Author: %s Genre: %s ", title, author, genre);
     }
 }

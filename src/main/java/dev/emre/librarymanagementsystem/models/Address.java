@@ -14,6 +14,7 @@ public class Address {
         this.street = street;
         this.zipCode = zipCode;
     }
+    public Address(){}
     public String getCity() {
         return city;
     }
@@ -49,4 +50,6 @@ public class Address {
     public int hashCode() {
         return Objects.hash(city, street, zipCode);
     }
+
+
 }
