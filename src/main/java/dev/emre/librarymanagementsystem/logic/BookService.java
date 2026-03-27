@@ -18,21 +18,7 @@ public class BookService {
      * @return true if the book was updated, false otherwise
      */
     public boolean updateBook(Book updated) {
-        if(updated == null)return false;
-        long id = updated.getId();
 
-        for(Book book : books) {
-            if(book.getId() == id) {
-                book.setTitle(updated.getTitle());
-                book.setAuthor(updated.getAuthor());
-                book.setGenre(updated.getGenre());
-                book.addCopies( updated.getTotalCopies() - book.getTotalCopies());
-                book.setAvailableCopies(updated.getAvailableCopies());
-                book.setBookCondition(updated.getBookCondition());
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -43,15 +29,7 @@ public class BookService {
         return new ArrayList<>(books);
     }
 
-    /**
-     * Returns a book with the given id.
-     * @param id    an id of a book
-     * @return an Optional containing the book with the given id, or empty if no book with the given id exists
-     */
-    public Optional<Book> getBookById(long id){
-        if(id <= 0)return Optional.empty();
-        return books.stream().filter(book -> book.getId() == id).findFirst();
-    }
+
 
     /**
      * Creates a new book and adds it to the list of books.
