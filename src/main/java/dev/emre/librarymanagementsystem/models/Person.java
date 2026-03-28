@@ -1,108 +1,125 @@
 package dev.emre.librarymanagementsystem.models;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents a person.
  */
 public class Person {
-    private long id;
-    private String name;
-    private String surname;
-    private LocalDate birthDate;
+    private final String id;
+    private final String name;
+    private final String surname;
+    private final LocalDate birthDate;
     private Address address;
-    private BigDecimal openFees = BigDecimal.ZERO;
+    private List<Fee> fees = new ArrayList<>();
 
-    public Person(
-            long id,
-            String name,
-            String surname,
-            LocalDate birthDate,
-            Address address
-    ){
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.birthDate = birthDate;
-        this.address = address;
+    private Person(PersonBuilder builder){
+        this.id = builder.id;
+        this.name = builder.name;
+        this.surname = builder.surname;
+        this.birthDate = builder.birthDate;
+        this.address = builder.address;
+        this.fees = builder.fees;
     }
-    public BigDecimal getOpenFees() {
-        return openFees;
-    }
-    public long getId() {
-        return id;
-    }
+
     public String getName() {
         return name;
-    }
-    public void setName(String name) {
-        this.name = name;
     }
     public String getSurname() {
         return surname;
     }
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
     public LocalDate getBirthDate() {
         return birthDate;
-    }
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
     }
     public Address getAddress() {
         return address;
     }
-    public void setAddress(Address address) {
-        this.address = address;
+    public String getId() {
+        return id;
+    }
+    public List<Fee> getFees() {
+        return fees;
+    }
+    public static PersonBuilder builder(){
+        return new PersonBuilder();
+    }
+    public PersonBuilder toBuilder(){
+        return new PersonBuilder()
+                .id(id)
+                .name(name)
+                .surname(surname)
+                .birthdate(birthDate)
+                .address(address);
     }
 
-    /**
-     * Adds a fee to the person's open fees.
-     * @param fees  a fee to add
-     */
-    public void addFees(BigDecimal fees) {
-        if(fees == null || fees.compareTo(BigDecimal.ZERO) <= 0 ) return;
-        this.openFees = this.openFees.add(fees);
+    public static class PersonBuilder{
+        private String id;
+        private String name;
+        private String surname;
+        private LocalDate birthDate;
+        private Address address;
+        private List<Fee> fees = new ArrayList<>();
+        public PersonBuilder id(String id){
+            this.id = id;
+            return this;
+        }
+        public PersonBuilder name(String name){
+            this.name = name;
+            return this;
+        }
+        public PersonBuilder surname(String surname){
+            this.surname = surname;
+            return this;
+        }
+        public PersonBuilder birthdate(LocalDate birthDate){
+            this.birthDate = birthDate;
+            return this;
+        }
+        public PersonBuilder address(Address address){
+            this.address = address;
+            return this;
+        }
+        public Person build(){
+            if(id == null){
+                this.id = UUID.randomUUID().toString();
+            }
+
+            validate();
+
+            return new Person(this);
+        }
+        private void validate(){
+            if(name == null || name.isEmpty()){
+                throw new IllegalArgumentException("Person name cannot be null or empty");
+            }
+            if(surname == null || surname.isEmpty()){
+                throw new IllegalArgumentException("Person surname cannot be null or empty");
+            }
+            if(birthDate == null){
+                throw new IllegalArgumentException("Person birthdate cannot be null");
+            }
+            if(address == null){
+                throw new IllegalArgumentException("Person address cannot be null");
+            }
+        }
+
     }
 
-    /**
-     * Pays the given fees from the person's open fees.
-     * @param fees  a fee to pay
-     */
-    public void payFees(BigDecimal fees) {
-        if(fees == null || fees.compareTo(BigDecimal.ZERO) <= 0 ) return;
-        if(!hasOpenFees()) return;
-        openFees = openFees.subtract(fees);
-        if(this.openFees.compareTo(BigDecimal.ZERO) < 0) this.openFees = BigDecimal.ZERO;
-    }
-
-    /**
-     * Checks if the person has any open fees.
-     * @return true if the fees are greater than zero, false otherwise
-     */
-    public boolean hasOpenFees() {
-        return openFees != null && this.openFees.compareTo(BigDecimal.ZERO) > 0;
-    }
-
-    /**
-     * Checks if the person has fees in the given range.
-     * @param from  begin of the range
-     * @param to    end of the range
-     * @return true if the person has fees in the given range, false otherwise
-     */
-    public boolean hasFeesInRange(BigDecimal from, BigDecimal to) {
-        if(!hasOpenFees()) return false;
-        if(from != null && openFees.compareTo(from) < 0) return false;
-        if(to != null && openFees.compareTo(to) > 0) return false;
-        return true;
-    }
     @Override
     public String toString() {
         return String.format("%s %s, geboren %s ", name, surname, birthDate);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if( obj == null || getClass() != obj.getClass() ) return false;
+        Person person = (Person) obj;
+        return Objects.equals(id, person.id);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 }
