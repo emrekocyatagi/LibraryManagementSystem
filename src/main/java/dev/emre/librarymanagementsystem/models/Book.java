@@ -5,46 +5,70 @@ import dev.emre.librarymanagementsystem.models.enums.Genre;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Book implements Comparable<Book> {
     private final String title;
     private final String author;
     private final Genre genre;
-    private BookCondition bookCondition = BookCondition.NEW;
+    private final String id;
+    private BookCondition bookCondition;
 
     private Book(BookBuilder builder)
      {
         this.title = builder.title;
         this.author = builder.author;
         this.genre = builder.genre;
+        this.id = builder.id;
+        this.bookCondition = builder.bookCondition;
     }
     public static BookBuilder builder() {
         return new BookBuilder();
     }
-
     public BookCondition getBookCondition() {
         return bookCondition;
     }
-    public void setBookCondition(BookCondition bookCondition) {
-        this.bookCondition = bookCondition;
+    public String getTitle() {
+        return title;
     }
-    public void markedAsDamaged() {
-        bookCondition = BookCondition.DAMAGED;
+    public String getAuthor() {
+        return author;
+    }
+    public Genre getGenre() {
+        return genre;
+    }
+    public String getId() {
+        return id;
+    }
+    public BookBuilder toBuilder(){
+        return new BookBuilder()
+                .id(id)
+                .title(title)
+                .author(author)
+                .genre(genre)
+                .bookCondition(bookCondition);
     }
 
 
-
-
+// ********* BOOK BUILDER ***********
 public static class BookBuilder {
     private String title;
     private String author;
     private Genre genre;
+    private String id;
+    private BookCondition bookCondition = BookCondition.NEW;
+
 
 
     public BookBuilder title(String title) {
         this.title = title;
         return this;
     }
+    public BookBuilder id(String id){
+        this.id = id;
+        return this;
+    }
+
     public BookBuilder author(String author){
         this.author = author;
         return this;
@@ -53,8 +77,29 @@ public static class BookBuilder {
         this.genre = genre;
         return this;
     }
+    public BookBuilder bookCondition(BookCondition bookCondition){
+        this.bookCondition = bookCondition;
+        return this;
+    }
     public Book build(){
+        if(id == null){
+            this.id = UUID.randomUUID().toString();
+        }
+
+        validate();
+
         return new Book(this);
+    }
+    private void validate(){
+        if(title == null || title.isEmpty()){
+            throw new IllegalArgumentException("Book title cannot be null or empty");
+        }
+        if(author == null || author.isEmpty()){
+            throw new IllegalArgumentException("Book author cannot be null or empty");
+        }
+        if(genre == null){
+            throw new IllegalArgumentException("Book genre cannot be null");
+        }
     }
 }
     @Override
