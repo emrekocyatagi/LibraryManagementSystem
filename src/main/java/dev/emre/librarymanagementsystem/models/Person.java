@@ -59,7 +59,13 @@ public class Person {
         private String surname;
         private LocalDate birthDate;
         private Address address;
-        private List<Fee> fees = new ArrayList<>();
+        private final List<Fee> fees = new ArrayList<>();
+        public void addFee(Fee fee){
+            if(fee == null){
+                throw new IllegalArgumentException("Fee cannot be null");
+            }
+            fees.add(fee);
+        }
         public PersonBuilder id(String id){
             this.id = id;
             return this;
