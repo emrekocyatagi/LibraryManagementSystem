@@ -12,8 +12,9 @@ public class BookService {
     private final Map<String, Book> books = new HashMap<>();
 
 
-   public void BookService(){
-
+   public BookService(){}
+   public List<Book> getAllBooks(){
+       return new ArrayList<>(books.values());
    }
    public void addBook(Book book){
        if(book == null){
