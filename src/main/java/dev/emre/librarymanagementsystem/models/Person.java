@@ -1,12 +1,13 @@
 package dev.emre.librarymanagementsystem.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
 /**
  * Represents a person.
  */
-public class Person {
+public class Person implements Comparable<Person> {
     private final String id;
     private final String name;
     private final String surname;
@@ -46,6 +47,9 @@ public class Person {
             throw new IllegalArgumentException("Fee cannot be null");
         }
         fees.add(fee);
+    }
+    public BigDecimal calculateTotalFees(){
+        return fees.stream().map(Fee::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
     public static PersonBuilder builder(){
         return new PersonBuilder();
@@ -132,6 +136,13 @@ public class Person {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+    @Override
+    public int compareTo(Person other) {
+        if(other == null){
+            return 1;
+        }
+        return this.name.compareTo(other.name);
     }
 
 }
