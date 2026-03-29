@@ -41,6 +41,12 @@ public class Person {
     public List<Fee> getFees() {
         return fees;
     }
+    public void addFee(Fee fee){
+        if(fee == null){
+            throw new IllegalArgumentException("Fee cannot be null");
+        }
+        fees.add(fee);
+    }
     public static PersonBuilder builder(){
         return new PersonBuilder();
     }

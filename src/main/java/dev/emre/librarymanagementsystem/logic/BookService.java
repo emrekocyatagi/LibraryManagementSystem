@@ -49,10 +49,14 @@ public class BookService {
    }
 
    public Book findBookById(String id){
-       if(id == null){
+       if(id == null || id.isBlank()){
            throw new IllegalArgumentException("Book id cannot be null");
        }
-       return books.get(id);
+       Book book = books.get(id);
+       if(book == null){
+           throw new IllegalArgumentException("Book not found");
+       }
+       return book;
    }
 
    public void deleteBook(String id){

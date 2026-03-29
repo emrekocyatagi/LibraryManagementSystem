@@ -40,7 +40,11 @@ public class PersonService {
         if(id == null || id.isBlank()){
             throw new IllegalArgumentException("Person id cannot be null");
         }
-        return persons.get(id);
+        Person person = persons.get(id);
+        if(person == null){
+            throw new IllegalArgumentException("Person not found");
+        }
+        return person;
     }
     public List<Person> getAllPersonsList(){
         return new ArrayList<>(persons.values()) ;

@@ -13,6 +13,7 @@ public class Book implements Comparable<Book> {
     private final Genre genre;
     private final String id;
     private BookCondition bookCondition;
+    private boolean isBorrowed;
 
     private Book(BookBuilder builder)
      {
@@ -39,6 +40,12 @@ public class Book implements Comparable<Book> {
     }
     public String getId() {
         return id;
+    }
+    public boolean isBorrowed() {
+        return isBorrowed;
+    }
+    public void setBorrowed(boolean borrowed) {
+        isBorrowed = borrowed;
     }
     public BookBuilder toBuilder(){
         return new BookBuilder()
