@@ -3,18 +3,27 @@ package dev.emre.librarymanagementsystem.models;
 import java.util.Objects;
 
 public class Address {
-    private String city;
-    private String street;
-    private String zipCode;
+    private final String city;
+    private final String street;
+    private final String zipCode;
     public Address(String city,
                    String street,
                    String zipCode
     ) {
+        if(city == null || city.isBlank()){
+            throw new IllegalArgumentException("City cannot be null or empty");
+        }
+        if(street == null || street.isBlank()){
+            throw new IllegalArgumentException("Street cannot be null or empty");
+        }
+        if(zipCode == null || zipCode.isBlank()){
+            throw new IllegalArgumentException("Zip code cannot be null or empty");
+        }
         this.city = city;
         this.street = street;
         this.zipCode = zipCode;
     }
-    public Address(){}
+
     public String getCity() {
         return city;
     }
@@ -24,15 +33,7 @@ public class Address {
     public String getZipCode() {
         return zipCode;
     }
-    public void setCity(String city) {
-        this.city = city;
-    }
-    public void setStreet(String street) {
-        this.street = street;
-    }
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
+
     @Override
     public String toString() {
         return String.format("%s %s %s", city, street, zipCode);
