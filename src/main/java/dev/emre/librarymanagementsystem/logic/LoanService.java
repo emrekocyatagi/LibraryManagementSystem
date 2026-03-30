@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 public class LoanService {
     private final Map<String, Loan> loans = new HashMap<>();
+    private final List<Loan> loanHistory = new ArrayList<>();
     private final FeeService feeService;
     private final BookService bookService;
     private final PersonService personService;
@@ -64,6 +65,7 @@ public class LoanService {
         if(isDamaged){
             book.setBookCondition(BookCondition.DAMAGED);
         }
+        loanHistory.add(loan);
         loans.remove(loan.getLoanId());
 
     }
