@@ -42,6 +42,7 @@ public class Person implements Comparable<Person> {
     public List<Fee> getFees() {
         return new ArrayList<>(fees);
     }
+
     public void addFee(Fee fee){
         if(fee == null){
             throw new IllegalArgumentException("Fee cannot be null");
@@ -50,6 +51,20 @@ public class Person implements Comparable<Person> {
     }
     public BigDecimal calculateTotalFees(){
         return fees.stream().map(Fee::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+    public void payFee(String feeId){
+        if(feeId == null || feeId.isEmpty()){
+            throw new IllegalArgumentException("Fee id cannot be null or empty");
+        }
+        Fee feeToPay = fees.stream()
+                .filter(f -> f.getId().equals(feeId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Fee not found"));
+        if(feeToPay.isPaid()){
+            throw new IllegalArgumentException("Fee already paid");
+        }
+        feeToPay.setPaid(true);
+
     }
     public static PersonBuilder builder(){
         return new PersonBuilder();
