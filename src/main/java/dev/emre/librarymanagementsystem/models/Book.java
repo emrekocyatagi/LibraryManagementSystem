@@ -22,6 +22,7 @@ public class Book implements Comparable<Book> {
         this.genre = builder.genre;
         this.id = builder.id;
         this.bookCondition = builder.bookCondition;
+        this.isBorrowed = builder.isBorrowed;
     }
     public static BookBuilder builder() {
         return new BookBuilder();
@@ -47,13 +48,17 @@ public class Book implements Comparable<Book> {
     public void setBorrowed(boolean borrowed) {
         isBorrowed = borrowed;
     }
+    public void setBookCondition(BookCondition bookCondition) {
+        this.bookCondition = bookCondition;
+    }
     public BookBuilder toBuilder(){
         return new BookBuilder()
                 .id(id)
                 .title(title)
                 .author(author)
                 .genre(genre)
-                .bookCondition(bookCondition);
+                .bookCondition(bookCondition)
+                .borrowed(isBorrowed);
     }
 
 
@@ -64,11 +69,17 @@ public static class BookBuilder {
     private Genre genre;
     private String id;
     private BookCondition bookCondition = BookCondition.NEW;
+    private boolean isBorrowed;
+
 
 
 
     public BookBuilder title(String title) {
         this.title = title;
+        return this;
+    }
+    public BookBuilder borrowed(boolean borrowed){
+        this.isBorrowed = borrowed;
         return this;
     }
     public BookBuilder id(String id){
@@ -107,11 +118,15 @@ public static class BookBuilder {
         if(genre == null){
             throw new IllegalArgumentException("Book genre cannot be null");
         }
+        if(bookCondition == null){
+            throw new IllegalArgumentException("Book condition cannot be null");
+        }
+
     }
 }
     @Override
     public String toString() {
-        return String.format("\nTitel: %s, Author: %s Genre: %s ", title, author, genre);
+        return String.format("\nTitle: %s, Author: %s Genre: %s ", title, author, genre);
     }
 
     /**
@@ -139,10 +154,11 @@ public static class BookBuilder {
         Book book = (Book) obj;
         return title.equals(book.title) &&
                 author.equals(book.author) &&
-                genre.equals(book.genre);
+                genre.equals(book.genre) &&
+                id.equals(book.id);
     }
     @Override
     public int hashCode() {
-        return Objects.hash(title, author, genre);
+        return Objects.hash(title, author, genre,id);
     }
 }

@@ -3,6 +3,7 @@ package dev.emre.librarymanagementsystem.models.filters;
 import dev.emre.librarymanagementsystem.logic.LoanService;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 public class PersonFilterBuilder {
     private Integer minBooks;
@@ -33,6 +34,7 @@ public class PersonFilterBuilder {
     }
 
     public PersonFilter build() {
-        return new PersonFilter(minBooks, maxBooks, minFees, loanService);
+        Map<String, Long> loanCounts = loanService.getActiveLoanCountsByPerson();
+        return new PersonFilter(minBooks, maxBooks, minFees, loanCounts);
     }
 }

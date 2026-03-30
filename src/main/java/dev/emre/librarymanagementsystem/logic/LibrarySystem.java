@@ -5,7 +5,9 @@ import dev.emre.librarymanagementsystem.models.Person;
 import dev.emre.librarymanagementsystem.models.filters.BookFilter;
 import dev.emre.librarymanagementsystem.models.filters.PersonFilter;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LibrarySystem {
     private final BookService bookService;
@@ -13,11 +15,14 @@ public class LibrarySystem {
     private final LoanService loanService;
     private final FeeService feeService;
 
+    public LibrarySystem(BookService bookService, PersonService personService, LoanService loanService, FeeService feeService) {
+        this.bookService = bookService;
+        this.personService = personService;
+        this.loanService = loanService;
+        this.feeService = feeService;
+    }
     public LibrarySystem() {
-    this.bookService = new BookService();
-    this.feeService = new FeeService();
-    this.personService = new PersonService();
-    this.loanService = new LoanService(feeService, bookService, personService);
+        this(new BookService(), new PersonService(), new LoanService(new FeeService(), new BookService(), new PersonService()), new FeeService());
     }
     public BookService getBookService() {
         return bookService;
@@ -38,11 +43,11 @@ public class LibrarySystem {
     public void registerPerson(Person person){
         personService.addPerson(person);
     }
-    public void borrowBook(String bookId, String personId){
-        loanService.issueLoan(bookId, personId);
+    public void borrowBook(String bookId, String personId, LocalDate borrowDate){
+        loanService.issueLoan(bookId, personId, borrowDate);
     }
-    public void returnBook(String bookId, boolean isDamaged){
-        loanService.returnBook(bookId, isDamaged);
+    public void returnBook(String bookId, boolean isDamaged, LocalDate returnDate){
+        loanService.returnBook(bookId, isDamaged,returnDate);
     }
 
     public List<Book> searchBooks(BookFilter filter){
@@ -57,5 +62,21 @@ public class LibrarySystem {
                 .sorted()
                 .toList();
     }
+    public void deleteBook(String id){
+        if(loanService.isBookBorrowed(id)){
+            throw new IllegalArgumentException("Book cannot be deleted because it is borrowed");
+        }
+        bookService.deleteBook(id);
+    }
+    public void deletePerson(String id){
+        if(loanService.hasActiveLoan(id)){
+            throw new IllegalArgumentException("Person cannot be deleted because they have an active loan");
+        }
+        if(!personService.findPersonById(id).getFees().isEmpty()){
+            throw new IllegalArgumentException("Person cannot be deleted because they have fees");
+        }
+        personService.deletePerson(id);
+    }
+
 
 }

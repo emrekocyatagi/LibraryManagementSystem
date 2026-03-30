@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PersonService {
+
     private final Map<String, Person> persons = new HashMap<>();
 
     public void addPerson(Person person){
@@ -20,7 +21,6 @@ public class PersonService {
         }
         persons.put(person.getId(), person);
     }
-
     public void updatePerson(String id, Person updatedPerson){
         if(updatedPerson == null){
             throw new IllegalArgumentException("Person cannot be null");
@@ -49,6 +49,7 @@ public class PersonService {
     public List<Person> getAllPersonsList(){
         return new ArrayList<>(persons.values()) ;
     }
+
     public void deletePerson(String id){
         if(id == null){
             throw new IllegalArgumentException("Person id cannot be null");
