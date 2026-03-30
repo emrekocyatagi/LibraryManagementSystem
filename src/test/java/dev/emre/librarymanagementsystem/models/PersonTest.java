@@ -1,4 +1,4 @@
-package dev.emre.librarymanagementsystem;
+package dev.emre.librarymanagementsystem.models;
 import org.junit.jupiter.api.Test;
 
 public class PersonTest {

@@ -20,14 +20,14 @@ public class FeeService {
     long weeksLate = (daysLate + 6) / 7;
 
     BigDecimal totalAmount = LATE_FEE_PER_WEEK.multiply(BigDecimal.valueOf(weeksLate));
-    return new Fee(totalAmount, "Late return: " + weeksLate +" week(s)", LocalDate.now());
+    return new Fee(totalAmount, "Late return: " + weeksLate +" week(s)", returnDate);
    }
 
-   public Fee calculateDamagedFee(boolean damaged){
+   public Fee calculateDamagedFee(boolean damaged, LocalDate feeDate){
     if(!damaged){
         return null;
     }
-    return new Fee(DAMAGED_FEE, "Damaged book", LocalDate.now());
+    return new Fee(DAMAGED_FEE, "Damaged book", feeDate);
    }
 
 

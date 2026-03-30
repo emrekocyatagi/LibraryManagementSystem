@@ -12,8 +12,9 @@ public class BookService {
     private final Map<String, Book> books = new HashMap<>();
 
 
-   public void BookService(){
-
+   public BookService(){}
+   public List<Book> getAllBooks(){
+       return new ArrayList<>(books.values());
    }
    public void addBook(Book book){
        if(book == null){
@@ -25,17 +26,11 @@ public class BookService {
 
        books.put(book.getId(), book);
    }
-   public void removeBook(Book book){
-       if(!books.containsKey(book.getId())){
-           throw new IllegalArgumentException("Book not found");
-       }
-       books.remove(book.getId());
-   }
    public void updateBook(String id, Book updatedbook){
        if(updatedbook == null){
            throw new IllegalArgumentException("Book cannot be null");
        }
-       if(id == null){
+       if(id == null || id.isBlank()){
            throw new IllegalArgumentException("Book id cannot be null");
        }
        if(!id.equals(updatedbook.getId())){

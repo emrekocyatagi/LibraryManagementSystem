@@ -18,12 +18,28 @@ public class Loan {
     private final LocalDate dueDate;
     private LocalDate returnDate;
 
+    // For production - uses today
+    public Loan(String bookId, String personId) {
+        this(bookId, personId, LocalDate.now());
+    }
 
-    public Loan(String bookId, String personId){
+
+    // For testing - custom date
+    public Loan(String bookId, String personId, LocalDate borrowDate) {
+        if(bookId == null || bookId.isBlank()){
+            throw new IllegalArgumentException("Book id cannot be null");
+        }
+        if(personId == null || personId.isBlank()){
+            throw new IllegalArgumentException("Person id cannot be null");
+        }
+        if(borrowDate == null){
+            throw new IllegalArgumentException("Borrow date cannot be null");
+        }
+
         this.loanId = UUID.randomUUID().toString();
         this.bookId= bookId;
         this.personId=personId;
-        this.borrowDate= LocalDate.now();
+        this.borrowDate= borrowDate;
         this.dueDate = this.borrowDate.plusMonths(LOAN_PERIOD_MONTHS);
     }
 
@@ -45,7 +61,12 @@ public class Loan {
     public LocalDate getBorrowDate(){
         return borrowDate;
     }
-
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
+    }
 
     @Override
     public String toString() {

@@ -13,7 +13,7 @@ public class Person implements Comparable<Person> {
     private final String surname;
     private final LocalDate birthDate;
     private Address address;
-    private List<Fee> fees = new ArrayList<>();
+    private final List<Fee> fees ;
 
     private Person(PersonBuilder builder){
         this.id = builder.id;
@@ -40,8 +40,9 @@ public class Person implements Comparable<Person> {
         return id;
     }
     public List<Fee> getFees() {
-        return fees;
+        return new ArrayList<>(fees);
     }
+
     public void addFee(Fee fee){
         if(fee == null){
             throw new IllegalArgumentException("Fee cannot be null");
@@ -50,6 +51,20 @@ public class Person implements Comparable<Person> {
     }
     public BigDecimal calculateTotalFees(){
         return fees.stream().map(Fee::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+    public void payFee(String feeId){
+        if(feeId == null || feeId.isEmpty()){
+            throw new IllegalArgumentException("Fee id cannot be null or empty");
+        }
+        Fee feeToPay = fees.stream()
+                .filter(f -> f.getId().equals(feeId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Fee not found"));
+        if(feeToPay.isPaid()){
+            throw new IllegalArgumentException("Fee already paid");
+        }
+        feeToPay.setPaid(true);
+
     }
     public static PersonBuilder builder(){
         return new PersonBuilder();
@@ -60,7 +75,8 @@ public class Person implements Comparable<Person> {
                 .name(name)
                 .surname(surname)
                 .birthdate(birthDate)
-                .address(address);
+                .address(address)
+                .fees(this.fees);
     }
 
     public static class PersonBuilder{
@@ -96,6 +112,13 @@ public class Person implements Comparable<Person> {
             this.address = address;
             return this;
         }
+        public PersonBuilder fees(List<Fee> fees){
+            if(fees != null){
+                this.fees.addAll(fees);
+            }
+
+            return this;
+        }
         public Person build(){
             if(id == null){
                 this.id = UUID.randomUUID().toString();
@@ -118,13 +141,16 @@ public class Person implements Comparable<Person> {
             if(address == null){
                 throw new IllegalArgumentException("Person address cannot be null");
             }
+            if(id == null || id.isEmpty()){
+                throw new IllegalArgumentException("Person id cannot be null or empty");
+            }
         }
 
     }
 
     @Override
     public String toString() {
-        return String.format("%s %s, geboren %s ", name, surname, birthDate);
+        return String.format("%s %s, %s ", name, surname, birthDate);
     }
     @Override
     public boolean equals(Object obj) {
