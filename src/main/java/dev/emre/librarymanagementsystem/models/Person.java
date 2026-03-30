@@ -43,15 +43,38 @@ public class Person implements Comparable<Person> {
         return new ArrayList<>(fees);
     }
 
+    /**
+     * Adds a fee to the list of fees associated with the person.
+     *
+     * @param fee the Fee object to be added; must not be null
+     * @throws IllegalArgumentException if the provided fee is null
+     */
     public void addFee(Fee fee){
         if(fee == null){
             throw new IllegalArgumentException("Fee cannot be null");
         }
         fees.add(fee);
     }
+
+    /**
+     * Calculates the total amount of fees associated with the person.
+     * The method iterates over the list of fees, retrieves the amount of each fee,
+     * and computes their sum.
+     *
+     * @return the total sum of all fees as a BigDecimal. If the list is empty, returns BigDecimal.ZERO.
+     */
     public BigDecimal calculateTotalFees(){
         return fees.stream().map(Fee::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    /**
+     * Marks a fee as paid based on the provided fee ID.
+     * If the fee ID is null or empty, an exception is thrown.
+     * If the fee with the given ID cannot be found, or if it has already been paid, an exception is thrown.
+     *
+     * @param feeId the unique identifier of the fee to be marked as paid; must not be null or empty
+     * @throws IllegalArgumentException if feeId is null or empty, the fee is not found, or the fee is already paid
+     */
     public void payFee(String feeId){
         if(feeId == null || feeId.isEmpty()){
             throw new IllegalArgumentException("Fee id cannot be null or empty");
