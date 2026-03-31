@@ -23,7 +23,10 @@ public class LibrarySystem {
         this.feeService = feeService;
     }
     public LibrarySystem() {
-        this(new BookService(), new PersonService(), new LoanService(new FeeService(), new BookService(), new PersonService()), new FeeService());
+        BookService bs = new BookService();
+        PersonService ps = new PersonService();
+        FeeService fs = new FeeService();
+        this(bs, ps, new LoanService(fs, bs, ps), fs);
     }
 
     /**
